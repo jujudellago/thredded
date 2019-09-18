@@ -46,23 +46,23 @@ module Thredded
     end
 
     def edit_path
-      Thredded::UrlsHelper.edit_messageboard_topic_path(@topic.messageboard, @topic)
+      Thredded::UrlsHelper.edit_messageboard_topic_path(@topic.messageboard, @topic,locale:I18n.locale)
     end
 
     def destroy_path
-      Thredded::UrlsHelper.messageboard_topic_path(@topic.messageboard, @topic)
+      Thredded::UrlsHelper.messageboard_topic_path(@topic.messageboard, @topic,locale:I18n.locale)
     end
 
     def follow_path
-      Thredded::UrlsHelper.follow_messageboard_topic_path(@topic.messageboard, @topic)
+      Thredded::UrlsHelper.follow_messageboard_topic_path(@topic.messageboard, @topic,locale:I18n.locale)
     end
 
     def unfollow_path
-      Thredded::UrlsHelper.unfollow_messageboard_topic_path(@topic.messageboard, @topic)
+      Thredded::UrlsHelper.unfollow_messageboard_topic_path(@topic.messageboard, @topic,locale:I18n.locale)
     end
 
     def messageboard_path
-      Thredded::UrlsHelper.messageboard_topics_path(@topic.messageboard)
+      Thredded::UrlsHelper.messageboard_topics_path(@topic.messageboard,locale:I18n.locale)
     end
   end
 end

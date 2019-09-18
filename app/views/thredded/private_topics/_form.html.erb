@@ -4,7 +4,7 @@
                  class: "thredded--form thredded--new-private-topic-form #{local_assigns[:css_class]}",
                  'data-thredded-topic-form' => true,
                  # TODO: only autocomplete users in this private topic
-                 'data-autocomplete-url' => autocomplete_users_path,
+                 'data-autocomplete-url' => autocomplete_users_path(locale: nil),
                  'data-autocomplete-min-length' => Thredded.autocomplete_min_length,
                  'data-thredded-submit-hotkey' => true,
              } do |form| %>
@@ -21,7 +21,7 @@
                          required: true,
                          placeholder: t('thredded.private_topics.form.users_placeholder'),
                          'data-thredded-users-select' => true,
-                         'data-autocomplete-url' => autocomplete_users_path,
+                         'data-autocomplete-url' => autocomplete_users_path(locale: nil),
                          'data-autocomplete-min-length' => Thredded.autocomplete_min_length,
                          rows: 1 %>
     </li>

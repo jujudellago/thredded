@@ -44,6 +44,8 @@ module Thredded
                  end
       render template: 'thredded/error_pages/forbidden', status: :forbidden
     end
+    
+
 
     protected
 

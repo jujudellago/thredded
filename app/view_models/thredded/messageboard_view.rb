@@ -53,12 +53,12 @@ module Thredded
 
     # @return [String]
     def path
-      Thredded::UrlsHelper.messageboard_topics_path(@messageboard)
+      Thredded::UrlsHelper.messageboard_topics_path(@messageboard,locale:I18n.locale)
     end
 
     # @return [String]
     def edit_preferences_path
-      Thredded::UrlsHelper.edit_messageboard_preferences_path(@messageboard)
+      Thredded::UrlsHelper.edit_messageboard_preferences_path(@messageboard,locale:I18n.locale)
     end
   end
 end

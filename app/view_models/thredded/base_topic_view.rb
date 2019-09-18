@@ -38,6 +38,7 @@ module Thredded
     def path
       Thredded::UrlsHelper.topic_path(
         @topic,
+        locale:I18n.locale,
         page: @read_state.first_unread_post_page || @read_state.last_read_post_page,
         anchor: ('unread' if @read_state.first_unread_post_page)
       )

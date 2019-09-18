@@ -58,11 +58,11 @@ module Thredded
     end
 
     def submit_path
-      Thredded::UrlsHelper.url_for([messageboard, topic, only_path: true])
+      Thredded::UrlsHelper.url_for([messageboard, topic,locale:I18n.locale, only_path: true])
     end
 
     def preview_path
-      Thredded::UrlsHelper.preview_new_messageboard_topic_path(messageboard)
+      Thredded::UrlsHelper.preview_new_messageboard_topic_path(messageboard,locale:I18n.locale)
     end
 
     private

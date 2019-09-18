@@ -69,11 +69,11 @@ module Thredded
     end
 
     def submit_path
-      Thredded::UrlsHelper.url_for([private_topic, only_path: true])
+      Thredded::UrlsHelper.url_for([private_topic, locale:I18n.locale, only_path: true])
     end
 
     def preview_path
-      Thredded::UrlsHelper.preview_new_private_topic_path
+      Thredded::UrlsHelper.preview_new_private_topic_path(locale:I18n.locale)
     end
 
     def user_names

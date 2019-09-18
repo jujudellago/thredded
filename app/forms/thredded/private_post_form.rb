@@ -30,14 +30,14 @@ module Thredded
     end
 
     def submit_path
-      Thredded::UrlsHelper.url_for([@topic, @post, only_path: true])
+      Thredded::UrlsHelper.url_for([@topic, @post, locale:I18n.locale, only_path: true])
     end
 
     def preview_path
       if @post.persisted?
-        Thredded::UrlsHelper.private_topic_private_post_preview_path(@topic, @post)
+        Thredded::UrlsHelper.private_topic_private_post_preview_path(@topic, @post,locale:I18n.locale)
       else
-        Thredded::UrlsHelper.preview_new_private_topic_private_post_path(@topic)
+        Thredded::UrlsHelper.preview_new_private_topic_private_post_path(@topic,locale:I18n.locale)
       end
     end
 

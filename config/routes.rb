@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Thredded::Engine.routes.draw do # rubocop:disable Metrics/BlockLength
+ #scope "/:locale" do
   resource :theme_preview, only: [:show], path: 'theme-preview' if %w[development test].include? Rails.env
 
   page_constraint = { page: /[1-9]\d*/ }
@@ -106,4 +107,5 @@ Thredded::Engine.routes.draw do # rubocop:disable Metrics/BlockLength
   end
 
   root to: 'messageboards#index'
+#end 
 end

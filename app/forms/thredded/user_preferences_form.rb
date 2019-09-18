@@ -78,9 +78,9 @@ module Thredded
 
     def update_path
       if @messageboard
-        Thredded::UrlsHelper.messageboard_preferences_path(@messageboard)
+        Thredded::UrlsHelper.messageboard_preferences_path(@messageboard,locale: I18n.locale)
       else
-        Thredded::UrlsHelper.global_preferences_path
+        Thredded::UrlsHelper.global_preferences_path(locale: I18n.locale)
       end
     end
 

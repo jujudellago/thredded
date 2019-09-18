@@ -16,6 +16,7 @@ module Thredded
     # @param topic [Topic, PrivateTopic, UserTopicDecorator, UserPrivateTopicDecorator]
     # @return [String]
     def topic_url(topic, params = {})
+        params = params.merge(locale: I18n.locale)
       if params[:page] == 1
         params = params.dup
         params.delete(:page)
@@ -37,6 +38,7 @@ module Thredded
     # @param topic [Topic, PrivateTopic, UserTopicDecorator, UserPrivateTopicDecorator]
     # @return [String] path to the latest unread page of the given topic.
     def topic_path(topic, params = {})
+        params = params.merge(locale: I18n.locale)
       topic_url(topic, params.merge(only_path: true))
     end
 
@@ -45,6 +47,7 @@ module Thredded
     # @return [String] URL of the topic page with the post anchor.
     def post_url(post, user:, **params)
       params = params.dup
+      params = params.merge(locale: I18n.locale)
       params[:anchor] ||= ActionView::RecordIdentifier.dom_id(post)
       params[:page] ||= post.private_topic_post? ? post.page : post.page(user: user)
       topic_url(post.postable, params)
@@ -54,6 +57,7 @@ module Thredded
     # @param user [Thredded.user_class] the current user
     # @return [String] path to the topic page with the post anchor.
     def post_path(post, user:, **params)
+      params = params.merge(locale: I18n.locale)
       post_url(post, params.merge(user: user, only_path: true))
     end
 
@@ -61,9 +65,9 @@ module Thredded
     # @return [String] path to the Edit Post page.
     def edit_post_path(post)
       if post.private_topic_post?
-        edit_private_topic_private_post_path(post.postable, post)
+        edit_private_topic_private_post_path(post.postable, post,locale: I18n.locale)
       else
-        edit_messageboard_topic_post_path(post.messageboard, post.postable, post)
+        edit_messageboard_topic_post_path(post.messageboard, post.postable, post,locale: I18n.locale)
       end
     end
 
@@ -71,9 +75,9 @@ module Thredded
     # @return [String] path to the DELETE endpoint.
     def delete_post_path(post)
       if post.private_topic_post?
-        private_topic_private_post_path(post.postable, post)
+        private_topic_private_post_path(post.postable, post,locale: I18n.locale)
       else
-        messageboard_topic_post_path(post.messageboard, post.postable, post)
+        messageboard_topic_post_path(post.messageboard, post.postable, post,locale: I18n.locale)
       end
     end
 
@@ -81,6 +85,7 @@ module Thredded
     # @param params [Hash] additional params
     # @return [String] the URL to the global or messageboard edit preferences page.
     def edit_preferences_url(messageboard = nil, params = {})
+       params = params.merge(locale: I18n.locale)
       if messageboard.try(:persisted?)
         edit_messageboard_preferences_url(messageboard, params)
       else
@@ -92,6 +97,7 @@ module Thredded
     # @param params [Hash] additional params
     # @return [String] the path to the global or messageboard edit preferences page.
     def edit_preferences_path(messageboard = nil, params = {})
+       params = params.merge(locale: I18n.locale)
       edit_preferences_url(messageboard, params.merge(only_path: true))
     end
 
@@ -99,6 +105,7 @@ module Thredded
     # @param [Hash] params additional params
     def unread_topics_path(messageboard: nil, **params)
       params[:only_path] = true
+       params = params.merge(locale: I18n.locale)
       if messageboard
         unread_messageboard_topics_url(messageboard, params)
       else
@@ -110,25 +117,25 @@ module Thredded
     # @return [String] the path to the global or messageboard search.
     def search_path(messageboard = nil)
       if messageboard.try(:persisted?)
-        messageboard_search_path(messageboard)
+        messageboard_search_path(messageboard,locale: I18n.locale)
       else
-        messageboards_search_path
+        messageboards_search_path(locale: I18n.locale)
       end
     end
 
     def quote_post_path(post)
       if post.private_topic_post?
-        quote_private_topic_private_post_path(post.postable, post)
+        quote_private_topic_private_post_path(post.postable, post,locale: I18n.locale)
       else
-        quote_messageboard_topic_post_path(post.messageboard, post.postable, post)
+        quote_messageboard_topic_post_path(post.messageboard, post.postable, post,locale: I18n.locale)
       end
     end
 
     def mark_unread_path(post, _params = {})
       if post.private_topic_post?
-        mark_as_unread_private_post_path(post)
+        mark_as_unread_private_post_path(post,locale: I18n.locale)
       else
-        mark_as_unread_post_path(post)
+        mark_as_unread_post_path(post,locale: I18n.locale)
       end
     end
 
@@ -136,9 +143,9 @@ module Thredded
     # @return [String] post permalink path
     def permalink_path(post)
       if post.private_topic_post?
-        private_post_permalink_path(post)
+        private_post_permalink_path(post,locale: I18n.locale)
       else
-        post_permalink_path(post)
+        post_permalink_path(post,locale: I18n.locale)
       end
     end
 
@@ -154,12 +161,14 @@ module Thredded
         page = 1 + (existing_topic.posts_count - 1) / Thredded::PrivatePost.default_per_page
         Thredded::UrlsHelper.private_topic_path(
           existing_topic,
+          locale: nil,
           page: (page if page > 1),
           autofocus_new_post_content: true,
           anchor: 'post_content'
         )
       else
         Thredded::UrlsHelper.new_private_topic_path(
+          locale: nil,
           private_topic: {
             user_names: to.send(Thredded.user_name_column),
             title: [current_user, to].map(&Thredded.user_display_name_method).join(' • ')

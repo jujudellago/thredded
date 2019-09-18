@@ -6,7 +6,7 @@ module Thredded
     delegate :users, to: :@topic
 
     def edit_path
-      Thredded::UrlsHelper.edit_private_topic_path(@topic)
+      Thredded::UrlsHelper.edit_private_topic_path(@topic,locale:I18n.locale)
     end
 
     def self.from_user(topic, user)
