@@ -8,7 +8,12 @@
       <%= view_hooks.messageboards_index.list.render self, groups: @groups do %>
         <% @groups.each do |group| %>
           <% if group.name.present? %>
-            <h3 class="thredded--messageboards-group--title"><%= group.name %></h3>
+            <h3 class="thredded--messageboards-group--title">
+              <%= link_to_if Thredded.show_messageboard_group_page,
+                            group.name,
+                            show_messageboard_group_path(group.id),
+                            class: 'thredded--link' %>
+            </h3>
           <% end %>
           <div class="thredded--messageboards-group">
             <%= view_hooks.messageboards_index.group.render self, group: group do %>

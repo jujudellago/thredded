@@ -43,7 +43,8 @@ Table of Contents
   * [Application layout](#application-layout)
     * [Reference your paths so that Thredded can find them](#reference-your-paths-so-that-thredded-can-find-them)
     * [Add Thredded styles](#add-thredded-styles)
-    * [Add Thredded JavaScripts](#add-thredded-javascripts)
+    * [Add Thredded JavaScripts (Sprockets)](#add-thredded-javascripts-sprockets)
+    * [Add Thredded JavaScripts (Webpack)](#add-thredded-javascripts-webpack)
   * [User profile page](#user-profile-page)
   * [Customizing views](#customizing-views)
     * [View hooks](#view-hooks)
@@ -95,7 +96,7 @@ Then, see the rest of this Readme for more information about using and customizi
 Add the gem to your Gemfile:
 
 ```ruby
-gem 'thredded', '~> 0.16.13'
+gem 'thredded', '~> 0.16.16'
 ```
 
 Add the Thredded [initializer] to your parent app by running the install generator.
@@ -173,7 +174,7 @@ mkdir -p app/views/thredded/shared/nav && cp "$(bundle show thredded)/$_/_standa
 
 ### Application layout
 
-You can also use Thredded with your application (or other) layout by by setting `Thredded.layout` in the initializer.
+You can also use Thredded with your application (or other) layout by setting `Thredded.layout` in the initializer.
 
 In this case, you will need to reference your paths/routes carefully and pull in thredded assets (styles and javascript):
 
@@ -210,7 +211,7 @@ from the Thredded one by adding this Sass snippet after `@import "thredded";`:
 
 See [below](#styles) for customizing the styles via Sass variables.
 
-#### Add Thredded JavaScripts
+#### Add Thredded JavaScripts (Sprockets)
 
 Include thredded JavaScripts in your `application.js`:
 
@@ -219,6 +220,28 @@ Include thredded JavaScripts in your `application.js`:
 ```
 
 Thredded is fully compatible with deferred and async script loading.
+
+#### Add Thredded JavaScripts (Webpack)
+
+You can also include Thredded JavaScript into your webpack pack.
+
+First, run `bundle exec rails webpacker:install:erb`.
+
+Then, add an `app/javascript/thredded_imports.js.erb` file with the following contents:
+
+```erb
+<%= Thredded::WebpackAssets.javascripts %>
+```
+
+Finally, add the following to your `app/javascript/packs/application.js`:
+
+```js
+require('thredded_imports.js');
+```
+
+Note that you must use `require` (not `import`) because Thredded JavaScript must be run after UJS/Turbolink `start()`
+has been called. This is because Webpack places `import` calls before the code in the same file (unlike `require`,
+which are placed in the same order as in the source).
 
 ##### Alternative JavaScript dependencies
 
@@ -381,15 +404,27 @@ Here are the steps to ensure the best support for your language if it isn't Engl
 
 1. Add `rails-i18n` and `kaminari-i18n` to your Gemfile.
 
-2. Require the translations for timeago.js in your JavaScript. E.g. for Brazilian Portuguese:
+2. Require the translations for timeago.js in your JavaScript. E.g. if you want to add German and Brazilian Portuguese:
+
+   Sprockets:
 
    ```js
    //= require thredded/dependencies/timeago
+   //= require timeago/locales/de
    //= require timeago/locales/pt_BR
    //= require thredded
-   ```
+   ```                 
+   
+   Webpack:
+   
+   ```erb
+   <% timeago_root = File.join(Gem.loaded_specs['timeago_js'].full_gem_path, 'assets', 'javascripts') %>
+   import "<%= File.join(timeago_root, 'timeago.js') %>";
+   <%= %w[de pt_BR].map { |locale| %(import "#{File.join(timeago_root, "timeago/locales/#{locale}.js")}";) } * "\n" %>
+   <%= Thredded::WebpackAssets.javascripts %>
+   ```   
 
-   Note that it is important that timeago and its locales are required *before* `//= require thredded`.
+   Note that it is important that timeago and its locales are required *before* Thredded.
 
 3. To generate URL slugs for messageboards, categories, and topics with support for more language than English,
    you can use a gem like [babosa](https://github.com/norman/babosa).
@@ -601,18 +636,36 @@ First, to get started, migrate and seed the database (SQLite by default):
 ```bash
 bundle
 # Create, migrate, and seed the development database with fake forum users, topics, and posts:
-rake db:create db:migrate db:seed
+bin/rails db:create db:migrate db:seed
+```
+
+Install NPM dependencies for the dummy app:
+
+```bash
+cd spec/dummy && yarn && cd -
 ```
 
 Then, start the dummy app server:
 
 ```bash
-rake dev:server
+bin/rails s
+```
+
+By default, the dummy app server uses Webpack for JavaScript.
+To use Sprockets instead, run:
+
+```bash
+THREDDED_TESTAPP_WEBPACK=1 bin/rails s
 ```
 
 ### Testing
 
-To run the tests, just run `rspec`. The test suite will re-create the test database on every run, so there is no need to
+In order to run the tests locally, you will need to be running webpack-dev-server (or do a manual compilation):
+
+    cd spec/dummy && yarn && cd -
+    BUNDLE_GEMFILE="${PWD}/Gemfile" spec/dummy/bin/webpack-dev-server
+
+Then to run the tests, just run `rspec`. The test suite will re-create the test database on every run, so there is no need to
 run tasks that maintain the test database.
 
 By default, SQLite is used in development and test. On Travis, the tests will run using SQLite, PostgreSQL, MySQL,
@@ -729,7 +782,7 @@ start the included docker-compose.yml file with:
 
 ```console
 docker-compose build
-docker-compose up -d
+docker-compose up
 ```
 
 The above will build and run everything, daemonized, resulting in a running

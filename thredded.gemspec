@@ -25,7 +25,7 @@ Thredded works with SQLite, MySQL (v5.6.4+), and PostgreSQL. See the demo at htt
   s.add_dependency 'db_text_search', '~> 0.3.0'
   s.add_dependency 'friendly_id'
   s.add_dependency 'htmlentities'
-  s.add_dependency 'inline_svg'
+  s.add_dependency 'inline_svg', '>= 1.6.0'
   s.add_dependency 'kaminari'
   s.add_dependency 'nokogiri'
   s.add_dependency 'pundit', '>= 1.1.0'
@@ -36,7 +36,7 @@ Thredded works with SQLite, MySQL (v5.6.4+), and PostgreSQL. See the demo at htt
   s.add_dependency 'html-pipeline'
   s.add_dependency 'kramdown', '>= 2.0.0'
   s.add_dependency 'kramdown-parser-gfm'
-  s.add_dependency 'onebox', '~> 1.8', '>= 1.8.48'
+  s.add_dependency 'onebox', '~> 1.8', '>= 1.8.99'
   # html-pipeline dependencies, see https://github.com/jch/html-pipeline#dependencies
   # for the AutolinkFilter
   s.add_dependency 'rinku'
@@ -47,7 +47,7 @@ Thredded works with SQLite, MySQL (v5.6.4+), and PostgreSQL. See the demo at htt
   s.add_dependency 'autoprefixer-rails'
   s.add_dependency 'sassc-rails', '>= 2.0.0'
   s.add_dependency 'sprockets-es6'
-  s.add_dependency 'timeago_js'
+  s.add_dependency 'timeago_js', '>= 3.0.2.2'
 
   # test dependencies
   s.add_development_dependency 'capybara', '~> 2.4'
